@@ -39,8 +39,13 @@ const postSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-
+    likesCount:{
+        type:Number
+    },
     comments: [commentSchema],
+    commentsCounts :{
+        type:Number
+    }
   },
   {
     timestamps: true, 
