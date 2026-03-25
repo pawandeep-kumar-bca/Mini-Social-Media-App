@@ -57,6 +57,49 @@ async function getPosts(req, res) {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
+async function toggleLike(req, res) {
+  try {
+    const userId = req.user;
+    const postId = req.params.id;
+
+    const post = await postModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const alreadyLiked = post.likes.includes(userId);
+
+    if (alreadyLiked) {
+      // Unlike
+      post.likes = post.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+      post.likesCount = Math.max(0, post.likesCount - 1);
+
+      await post.save();
+
+      return res.status(200).json({
+        message: "Post unliked",
+        likesCount: post.likesCount,
+      });
+    } else {
+      // Like
+      post.likes.push(userId);
+      post.likesCount += 1;
+
+      await post.save();
+
+      return res.status(200).json({
+        message: "Post liked",
+        likesCount: post.likesCount,
+      });
+    }
+  } catch (err) {
+    console.error("like post error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
 module.exports = {
-  createPost,
+  createPost,getPosts,toggleLike
 };

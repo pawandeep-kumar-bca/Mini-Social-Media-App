@@ -8,7 +8,9 @@ const router = express.Router()
 router.post('/',userLoggedIn,postControllers.createPost)
 
 // GET /api/posts
-router.get('/',userLoggedIn,postControllers.createPost)
+router.get('/',userLoggedIn,postControllers.getPosts)
 
+// PUT /api/posts/:id/like
+router.put('/:id/like',userLoggedIn,postControllers.toggleLike)
 
 module.exports = router
