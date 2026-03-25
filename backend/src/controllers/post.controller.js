@@ -100,6 +100,50 @@ async function toggleLike(req, res) {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
+async function addComment(req, res) {
+  try {
+    const userId = req.user;
+    const postId = req.params.id;
+    let { text } = req.body;
+
+    text = text?.trim();
+
+    // Validate text
+    if (!text) {
+      return res.status(400).json({ message: "Comment cannot be empty" });
+    }
+
+    // Find post
+    const post = await postModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Create comment object
+    const newComment = {
+      user: userId,
+      text,
+    };
+
+    // Add comment
+    post.comments.push(newComment);
+
+    // Update count
+    post.commentsCounts += 1;
+
+    await post.save();
+
+    return res.status(201).json({
+      message: "Comment added successfully",
+      comment: newComment,
+      commentsCounts: post.commentsCounts,
+    });
+  } catch (err) {
+    console.error("add comment error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
 module.exports = {
-  createPost,getPosts,toggleLike
+  createPost,getPosts,toggleLike,addComment
 };

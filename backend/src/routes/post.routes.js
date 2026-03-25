@@ -13,4 +13,6 @@ router.get('/',userLoggedIn,postControllers.getPosts)
 // PUT /api/posts/:id/like
 router.put('/:id/like',userLoggedIn,postControllers.toggleLike)
 
+// POST /api/posts/:id/comment
+router.post('/:id/comment',userLoggedIn,postControllers.addComment)
 module.exports = router
