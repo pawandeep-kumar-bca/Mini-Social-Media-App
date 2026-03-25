@@ -1,27 +1,41 @@
 const postModel = require("../models/post.model");
-
+const imagekit = require("../config/imagekit");
 // ✅ CREATE POST
 async function createPost(req, res) {
   try {
-    let { text, image } = req.body;
-
+    let { text } = req.body;
     text = text?.trim();
 
-    if (!text && !image) {
+    let imageUrl = "";
+
+    // Upload image if exists
+    if (req.file) {
+      const result = await imagekit.upload({
+        file: req.file.buffer, // buffer from multer
+        fileName: `post_${Date.now()}`,
+        folder: "/posts",
+      });
+
+      imageUrl = result.url;
+    }
+
+    // Validation
+    if (!text && !imageUrl) {
       return res.status(400).json({ message: "Empty post is not allowed" });
     }
 
     const post = await postModel.create({
       user: req.user.id,
       text,
-      image
+      image: imageUrl,
+      likesCount: 0,
+      commentsCounts: 0,
     });
 
     return res.status(201).json({
       message: "Post created successfully",
-      post
+      post,
     });
-
   } catch (err) {
     console.error("create post error:", err);
     return res.status(500).json({ message: "Internal server error" });
