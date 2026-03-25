@@ -1,44 +1,65 @@
 const { body, validationResult } = require("express-validator");
 
-const ResponseWithErrors = (req, res,next) => {
+// ✅ COMMON ERROR HANDLER
+const responseWithErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({
+      message: "Validation failed",
+      errors: errors.array()
+    });
   }
   next();
 };
 
+// ✅ SIGNUP VALIDATION
 const signupUserValidation = [
   body("username")
     .notEmpty()
-    .withMessage("user name is required")
+    .withMessage("Username is required")
     .trim()
-    .isLowercase(),
-  body("email").isEmail().notEmpty().withMessage("email is required"),
+    .toLowerCase(),
+
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email format")
+    .normalizeEmail(),
+
   body("password")
     .notEmpty()
-    .withMessage("password is required")
+    .withMessage("Password is required")
     .isLength({ min: 6 })
-    .withMessage("password length is 6 letter")
+    .withMessage("Password must be at least 6 characters")
     .matches(/[A-Z]/)
-    .withMessage("Must contain uppercase")
+    .withMessage("Must contain uppercase letter")
     .matches(/[a-z]/)
-    .withMessage("Must contain lowercase")
+    .withMessage("Must contain lowercase letter")
     .matches(/[0-9]/)
     .withMessage("Must contain number")
     .matches(/[^A-Za-z0-9]/)
-    .withMessage("Must contain special char"),
-  ResponseWithErrors,
+    .withMessage("Must contain special character"),
+
+  responseWithErrors,
 ];
 
+// ✅ LOGIN VALIDATION
 const loginUserValidation = [
-  body('email')
-  .notEmpty()
-  .withMessage('email is required')
-  .isEmail(),
-  body('password')
-  .notEmpty()
-  .withMessage('password is required'),
-  ResponseWithErrors
-]
-module.exports = {signupUserValidation,loginUserValidation}
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email"),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required"),
+
+  responseWithErrors,
+];
+
+module.exports = {
+  signupUserValidation,
+  loginUserValidation
+};
