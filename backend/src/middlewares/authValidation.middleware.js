@@ -1,6 +1,6 @@
 const { body, validationResult } = require("express-validator");
 
-const ResponseWithErrors = (req, res) => {
+const ResponseWithErrors = (req, res,next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -15,7 +15,7 @@ const signupUserValidation = [
     .trim()
     .isLowercase(),
   body("email").isEmail().notEmpty().withMessage("email is required"),
-  body(password)
+  body("password")
     .notEmpty()
     .withMessage("password is required")
     .isLength({ min: 6 })
