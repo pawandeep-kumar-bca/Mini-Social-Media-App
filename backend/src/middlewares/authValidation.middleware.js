@@ -31,4 +31,14 @@ const signupUserValidation = [
   ResponseWithErrors,
 ];
 
-module.exports = {signupUserValidation}
+const loginUserValidation = [
+  body('email')
+  .notEmpty()
+  .withMessage('email is required')
+  .isEmail(),
+  body('password')
+  .notEmpty()
+  .withMessage('password is required'),
+  ResponseWithErrors
+]
+module.exports = {signupUserValidation,loginUserValidation}
