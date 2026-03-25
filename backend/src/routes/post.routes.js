@@ -8,11 +8,11 @@ const router = express.Router()
 router.post('/',userLoggedIn,postControllers.createPost)
 
 // GET /api/posts
-router.get('/',userLoggedIn,postControllers.getPosts)
+router.get('/',postControllers.getPosts)
 
 // PUT /api/posts/:id/like
 router.put('/:id/like',userLoggedIn,postControllers.toggleLike)
 
-// POST /api/posts/:id/comment
-router.post('/:id/comment',userLoggedIn,postControllers.addComment)
+// POST /api/posts/:id/comments
+router.post('/:id/comments',userLoggedIn,postControllers.addComment)
 module.exports = router
