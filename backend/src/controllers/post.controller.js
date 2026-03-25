@@ -11,9 +11,7 @@ async function createPost(req, res) {
     }
 
     const postData = {
-      user: req.user.id, // from auth middleware
-      likesCount: 0,
-      commentsCounts: 0,
+      user: req.user, 
     };
 
     if (text) postData.text = text;
@@ -30,7 +28,35 @@ async function createPost(req, res) {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
+async function getPosts(req, res) {
+  try {
+   
+    const page = Number(req.query) || 1;
+    const limit = Number(req.query) || 10;
 
+    const skip = (page - 1) * limit;
+
+    const posts = await postModel
+      .find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("user", "name ");
+
+    const totalPosts = await postModel.countDocuments();
+
+    return res.status(200).json({
+      message: "Posts fetched successfully",
+      page,
+      totalPages: Math.ceil(totalPosts / limit),
+      totalPosts,
+      posts,
+    });
+  } catch (err) {
+    console.error("get posts error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
 module.exports = {
   createPost,
 };

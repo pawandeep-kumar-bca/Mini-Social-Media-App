@@ -7,6 +7,8 @@ const router = express.Router()
 
 router.post('/',userLoggedIn,postControllers.createPost)
 
+// GET /api/posts
+router.get('/',userLoggedIn,postControllers.createPost)
 
 
 module.exports = router
