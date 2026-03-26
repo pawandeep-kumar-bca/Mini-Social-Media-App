@@ -55,7 +55,7 @@ export default function Signup() {
     try {
       setLoading(true);
       const res = await API.post("/auth/signup", form);
-
+      console.log(res)
       localStorage.setItem("token", res.data.token);
 
       setSnackbar({
@@ -68,7 +68,7 @@ export default function Signup() {
         window.location.href = "/";
       }, 1500);
     } catch (err) {
-      console.log(err)
+      console.log(err.response.data)
       setSnackbar({
         open: true,
         message: "Signup failed ❌",
