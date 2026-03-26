@@ -1,6 +1,6 @@
 const { body, validationResult } = require("express-validator");
 
-// ✅ COMMON ERROR HANDLER
+//  COMMON ERROR HANDLER
 const responseWithErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -12,7 +12,7 @@ const responseWithErrors = (req, res, next) => {
   next();
 };
 
-// ✅ SIGNUP VALIDATION
+//  SIGNUP VALIDATION
 const signupUserValidation = [
   body("username")
     .notEmpty()
@@ -44,7 +44,7 @@ const signupUserValidation = [
   responseWithErrors,
 ];
 
-// ✅ LOGIN VALIDATION
+//  LOGIN VALIDATION
 const loginUserValidation = [
   body("email")
     .notEmpty()

@@ -1,6 +1,6 @@
 const postModel = require("../models/post.model");
 const imagekit = require("../config/imagekit");
-// ✅ CREATE POST
+// CREATE POST
 async function createPost(req, res) {
   try {
     let { text } = req.body;
@@ -42,7 +42,7 @@ async function createPost(req, res) {
   }
 }
 
-// ✅ GET POSTS 
+//  GET POSTS
 async function getPosts(req, res) {
   try {
     const page = Number(req.query.page) || 1;
@@ -65,16 +65,15 @@ async function getPosts(req, res) {
       page,
       totalPages: Math.ceil(totalPosts / limit),
       totalPosts,
-      posts
+      posts,
     });
-
   } catch (err) {
     console.error("get posts error:", err);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
 
-// ✅ TOGGLE LIKE 
+//  TOGGLE LIKE
 async function toggleLike(req, res) {
   try {
     const userId = req.user.id;
@@ -90,7 +89,7 @@ async function toggleLike(req, res) {
 
     if (alreadyLiked) {
       post.likes = post.likes.filter(
-        (id) => id.toString() !== userId.toString()
+        (id) => id.toString() !== userId.toString(),
       );
     } else {
       post.likes.push(userId);
@@ -101,16 +100,15 @@ async function toggleLike(req, res) {
     return res.status(200).json({
       message: alreadyLiked ? "Post unliked" : "Post liked",
       likesCount: post.likes.length,
-      isLiked: !alreadyLiked
+      isLiked: !alreadyLiked,
     });
-
   } catch (err) {
     console.error("like error:", err);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
 
-// ✅ ADD COMMENT 
+//  ADD COMMENT
 async function addComment(req, res) {
   try {
     const userId = req.user.id;
@@ -131,7 +129,7 @@ async function addComment(req, res) {
 
     const newComment = {
       user: userId,
-      text
+      text,
     };
 
     post.comments.push(newComment);
@@ -141,9 +139,8 @@ async function addComment(req, res) {
     return res.status(201).json({
       message: "Comment added successfully",
       comment: newComment,
-      commentsCount: post.comments.length
+      commentsCount: post.comments.length,
     });
-
   } catch (err) {
     console.error("comment error:", err);
     return res.status(500).json({ message: "Internal server error" });
@@ -154,5 +151,5 @@ module.exports = {
   createPost,
   getPosts,
   toggleLike,
-  addComment
+  addComment,
 };

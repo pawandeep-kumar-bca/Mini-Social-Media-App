@@ -2,7 +2,7 @@ const userModel = require("../models/auth.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-// ✅ SIGNUP
+//  SIGNUP
 async function signupUser(req, res) {
   try {
     let { username, email, password } = req.body;
@@ -24,12 +24,30 @@ async function signupUser(req, res) {
       email,
       password: hashPassword
     });
+   
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email
+      },
+      process.env.JWT_TOKEN,
+      { expiresIn: "7d" }
+    );
 
+  
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
     return res.status(201).json({
       message: "User signup successfully",
+      token,
       user: {
         id: user._id,
         username: user.username,
+        
         email: user.email
       }
     });
@@ -42,7 +60,7 @@ async function signupUser(req, res) {
   }
 }
 
-// ✅ LOGIN
+//  LOGIN
 async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
@@ -72,7 +90,7 @@ async function loginUser(req, res) {
       { expiresIn: "7d" }
     );
 
-    // ✅ COOKIE SET
+  
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

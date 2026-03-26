@@ -7,7 +7,7 @@ const {
   loginUserValidation,
 } = require("../middlewares/authValidation.middleware");
 
-// ✅ ROUTES
+// ROUTES
 router.post("/signup", signupUserValidation, authControllers.signupUser);
 router.post("/login", loginUserValidation, authControllers.loginUser);
 
